@@ -1,13 +1,16 @@
 package br.com.rodrigo.githubfiles.api;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.rodrigo.githubfiles.dto.GithubFilesSummaryDTO;
+import br.com.rodrigo.githubfiles.dto.GithubRepositoryDTO;
 import br.com.rodrigo.githubfiles.service.GithubService;
 
 @RestController
@@ -21,9 +24,9 @@ public class GithubController {
 		this.githubService = githubService;
 	}
 	
-	@GetMapping("/{repository}")
-	public ResponseEntity<GithubFilesSummaryDTO> getSummary(@PathVariable String repository) {
-		GithubFilesSummaryDTO result = githubService.getGithubSummary(repository);
+	@PutMapping()
+	public ResponseEntity<GithubFilesSummaryDTO> getSummary(@RequestBody @Valid GithubRepositoryDTO repo) {
+		GithubFilesSummaryDTO result = githubService.getGithubSummary(repo.getUrl());
 		return ResponseEntity.ok(result);
 	}
 }

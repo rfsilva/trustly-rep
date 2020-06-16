@@ -15,6 +15,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 
 import br.com.rodrigo.githubfiles.dto.GithubFilesSummaryDTO;
+import br.com.rodrigo.githubfiles.dto.GithubRepositoryDTO;
 import br.com.rodrigo.githubfiles.service.GithubRepoAnalyzer;
 import br.com.rodrigo.githubfiles.service.GithubService;
 import br.com.rodrigo.githubfiles.service.impl.GithubRepoAnalyzerImpl;
@@ -37,7 +38,7 @@ public class ControllerTest {
 		Mockito.doReturn(buildSummary()).when(githubRepoAnalyzer).performAnalysis(Mockito.anyString());
 		GithubService githubService = new GithubServiceImpl(githubRepoAnalyzer);
 		GithubController controller = new GithubController(githubService);
-		ResponseEntity<GithubFilesSummaryDTO> result = controller.getSummary("any-place");
+		ResponseEntity<GithubFilesSummaryDTO> result = controller.getSummary(GithubRepositoryDTO.builder().url("any-place").build());
 		assertThat(result.getBody().getFileDetailsList().size()).isEqualTo(4);
 	}
 	
@@ -48,7 +49,7 @@ public class ControllerTest {
 		GithubService githubService = new GithubServiceImpl(analyzer);
 		GithubController controller = new GithubController(githubService);
 		
-		ResponseEntity<GithubFilesSummaryDTO> result = controller.getSummary("https://github.com/rfsilva/trustly-rep/tree/develop");
+		ResponseEntity<GithubFilesSummaryDTO> result = controller.getSummary(GithubRepositoryDTO.builder().url("https://github.com/rfsilva/trustly-rep/tree/develop").build());
 		assertThat(result.getBody().getFileDetailsList().size()).isEqualTo(17);
 	}
 	

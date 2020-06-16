@@ -28,22 +28,25 @@ public final class GithubRepoAnalyzerImpl implements GithubRepoAnalyzer {
 
 	private static final String PREFIX = "https://github.com";
 
+	private Map<String, FileSum> contentMap;
+	
 	public Map<String, FileSum> performAnalysis(String html) {
-		return performAnalysis(html, FileType.FOLDER, new HashMap<>());
+		contentMap = new HashMap<>();
+		return performAnalysis(html, FileType.FOLDER);
 	}
 				
-	private Map<String, FileSum> performAnalysis(String html, FileType type, Map<String, FileSum> map) {
+	private Map<String, FileSum> performAnalysis(String html, FileType type) {
 		//1. Gets the document
 		Document doc = getDoc(html);
 		if (doc != null) {
 			if (type == FileType.FILE) {
-				performFileAnalysis(doc, map);
+				performFileAnalysis(doc);
 			}
 			if (type == FileType.FOLDER) {
-				performFolderAnalysis(doc, map);
+				performFolderAnalysis(doc);
 			}
 		}
-		return map;
+		return contentMap;
 	}
 	
 	private Document getDoc(String html) {
@@ -68,7 +71,7 @@ public final class GithubRepoAnalyzerImpl implements GithubRepoAnalyzer {
 		return doc;
 	}
 
-	private void performFileAnalysis(Document doc, Map<String, FileSum> map) {
+	private void performFileAnalysis(Document doc) {
 		String fileName = doc.select("strong.final-path").get(0).html();
 		String extension = FileUtils.getExtension(fileName);
 		
@@ -77,14 +80,7 @@ public final class GithubRepoAnalyzerImpl implements GithubRepoAnalyzer {
 		
 		Integer lines = getLines(result);
 		Long bytes = getBytes(result);
-		
-		FileSum fs = map.get(extension);
-		if (fs == null) {
-			fs = new FileSum(0L, 0);
-		}
-		fs.setBytes(bytes + fs.getBytes());
-		fs.setLines(fs.getLines() + lines);
-		map.put(extension, fs);
+		increment(extension, lines, bytes);
 	}
 	
 	private Integer getLines(String content) {
@@ -111,7 +107,7 @@ public final class GithubRepoAnalyzerImpl implements GithubRepoAnalyzer {
 		return n.longValue() * unit.getMultiplier();
 	}
 	
-	private void performFolderAnalysis(Document doc, Map<String, FileSum> map) {
+	private void performFolderAnalysis(Document doc) {
 		Elements lines = doc.select("table.files").select("tr.js-navigation-item");
 		for (Element line : lines) {
 			Elements el = line.select("svg");
@@ -119,11 +115,21 @@ public final class GithubRepoAnalyzerImpl implements GithubRepoAnalyzer {
 				String icon = el.get(0).attributes().get("aria-label");
 				String link = PREFIX + line.select("a.js-navigation-open").get(0).attributes().get("href");
 				if ("directory".equals(icon)) {
-					performAnalysis(link, FileType.FOLDER, map);
+					performAnalysis(link, FileType.FOLDER);
 				} else {
-					performAnalysis(link, FileType.FILE, map);
+					performAnalysis(link, FileType.FILE);
 				}
 			}
 		}
+	}
+	
+	private synchronized void increment(String extension, Integer lines, Long bytes) {
+		FileSum content = contentMap.get(extension);
+		if (content == null) {
+			content = new FileSum(extension, 0L, 0);
+		}
+		content.setBytes(content.getBytes() + bytes);
+		content.setLines(content.getLines() + lines);
+		contentMap.put(extension, content);
 	}
 }
