@@ -1,12 +1,14 @@
 package br.com.rodrigo.githubfiles.service.impl;
 
 import java.io.IOException;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
@@ -25,13 +27,25 @@ import lombok.extern.log4j.Log4j2;
 @Service
 public final class GithubRepoAnalyzerImpl implements GithubRepoAnalyzer {
 
-	private static final String PREFIX = "https://github.com";
+	private static final String GITHUB_PREFIX = "https://github.com";
 
 	private Map<String, FileSum> contentMap;	
 	
-	public Map<String, FileSum> performAnalysis(String html) {
-		contentMap = new HashMap<>();
-		return performAnalysis(html, FileType.FOLDER);
+	public Optional<Map<String, FileSum>> performAnalysis(String html) {
+		if (isValidUrl(html)) {
+			contentMap = new HashMap<>();
+			return Optional.of(performAnalysis(html, FileType.FOLDER));
+		}
+		return Optional.empty();
+	}
+	
+	private boolean isValidUrl(String url) {
+		try {
+			new URL(url).openStream().close();
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
 	}
 				
 	private Map<String, FileSum> performAnalysis(String html, FileType type) {
@@ -113,7 +127,7 @@ public final class GithubRepoAnalyzerImpl implements GithubRepoAnalyzer {
 			Elements el = line.select("svg");
 			if (el != null && !el.isEmpty()) {
 				String icon = el.get(0).attributes().get("aria-label");
-				String link = PREFIX + line.select("a.js-navigation-open").get(0).attributes().get("href");
+				String link = GITHUB_PREFIX + line.select("a.js-navigation-open").get(0).attributes().get("href");
 				if ("directory".equals(icon)) {
 					performAnalysis(link, FileType.FOLDER);
 				} else {

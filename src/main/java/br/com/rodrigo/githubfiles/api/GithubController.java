@@ -27,6 +27,9 @@ public class GithubController {
 	@PutMapping()
 	public ResponseEntity<GithubFilesSummaryDTO> getSummary(@RequestBody @Valid GithubRepositoryDTO repo) {
 		GithubFilesSummaryDTO result = githubService.getGithubSummary(repo.getUrl());
-		return ResponseEntity.ok(result);
+		if (result != null) {
+			return ResponseEntity.ok(result);
+		}
+		return ResponseEntity.badRequest().body(GithubFilesSummaryDTO.builder().errorCode(1).build());
 	}
 }

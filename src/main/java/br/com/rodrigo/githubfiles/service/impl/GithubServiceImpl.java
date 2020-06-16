@@ -1,6 +1,7 @@
 package br.com.rodrigo.githubfiles.service.impl;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,10 @@ public class GithubServiceImpl implements GithubService {
 	}
 	
 	public GithubFilesSummaryDTO getGithubSummary(String githubRepo) {
-		Map<String, FileSum> resultMap = githubRepoAnalyzer.performAnalysis(githubRepo);
-		return Converters.convert(resultMap);	
+		Optional<Map<String, FileSum>> resultMap = githubRepoAnalyzer.performAnalysis(githubRepo);
+		if (resultMap.isPresent()) {
+			return Converters.convert(resultMap.get());	
+		}
+		return null;
 	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +17,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class GithubFilesSummaryDTO {
 
-	@JsonProperty("files")
-	List<GithubFileDTO> fileDetailsList;
+	@JsonProperty("result")
+	@ApiModelProperty(notes = "Result of analysis, grouped by file extension")
+	private List<GithubFileDTO> fileDetailsList;
+	
+	@ApiModelProperty(notes = "Result of processing: 0 - Success; 1 - Failure: bad URL/Repository")
+	private Integer errorCode;
 }

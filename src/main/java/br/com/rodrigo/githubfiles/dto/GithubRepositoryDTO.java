@@ -3,6 +3,9 @@ package br.com.rodrigo.githubfiles.dto;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.URL;
+
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,5 +20,7 @@ public class GithubRepositoryDTO {
 	
 	@NotNull
 	@Size(min = 10)
+	@URL
+	@ApiModelProperty(required = true, notes = "URL of a valid repository in Github (i.e. 'https://github.com/rfsilva/trustly-rep')")
 	private String url;
 }
