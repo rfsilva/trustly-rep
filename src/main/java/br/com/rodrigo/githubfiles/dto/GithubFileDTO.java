@@ -13,5 +13,6 @@ import lombok.NoArgsConstructor;
 public class GithubFileDTO {
 	private String extension;
 	private Integer lines;
+	private Integer numFiles;
 	private Long bytes;
 }
