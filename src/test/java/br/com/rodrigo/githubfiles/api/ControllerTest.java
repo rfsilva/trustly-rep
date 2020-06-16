@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
+import org.junit.jupiter.api.Order;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -31,6 +32,7 @@ public class ControllerTest {
 	}
 	
 	@Test
+	@Order(1)
 	public void performMockTest() {
 		Mockito.doReturn(buildSummary()).when(githubRepoAnalyzer).performAnalysis(Mockito.anyString());
 		GithubService githubService = new GithubServiceImpl(githubRepoAnalyzer);
@@ -40,13 +42,14 @@ public class ControllerTest {
 	}
 	
 	@Test
+	@Order(2)
 	public void performRealTest() {
 		GithubRepoAnalyzer analyzer = new GithubRepoAnalyzerImpl();
 		GithubService githubService = new GithubServiceImpl(analyzer);
 		GithubController controller = new GithubController(githubService);
 		
 		ResponseEntity<GithubFilesSummaryDTO> result = controller.getSummary("https://github.com/rfsilva/trustly-rep/tree/develop");
-		assertThat(result.getBody().getFileDetailsList().size()).isEqualTo(4);
+		assertThat(result.getBody().getFileDetailsList().size()).isEqualTo(17);
 	}
 	
 	private Map<String, FileSum> buildSummary() {
