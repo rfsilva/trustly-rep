@@ -68,9 +68,16 @@ public final class GithubRepoAnalyzer {
 		System.out.println(result);
 		
 		//Extract lines and bytes
-		String bytesBlock = result.substring(result.indexOf("</span>") + 7).trim();
-		String measureUnit = bytesBlock.substring(bytesBlock.lastIndexOf(" "));
-		Integer lines = Integer.parseInt(result.substring(0, result.indexOf("lines")).trim());
+		Integer lines = 0;
+		if (result.indexOf("lines") > 0) {
+			lines = Integer.parseInt(result.substring(0, result.indexOf("lines")).trim());
+		}
+
+		String bytesBlock = result;
+		if (result.indexOf("</span>") > 0) {
+			bytesBlock = result.substring(result.indexOf("</span>") + 7).trim();
+		}
+		String measureUnit = bytesBlock.substring(bytesBlock.lastIndexOf(" ")).trim();
 		
 		//Bytes
 		//KB
