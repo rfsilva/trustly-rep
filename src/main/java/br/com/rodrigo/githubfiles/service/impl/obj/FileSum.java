@@ -8,12 +8,14 @@ import lombok.Data;
 public final class FileSum {
 
 	private String extension;
+	private Integer numFiles;
 	private Long bytes;
 	private Integer lines;
 	
-	public FileSum(String extension, Long bytes, Integer lines) {
+	public FileSum(String extension, Integer numFiles, Long bytes, Integer lines) {
 		this.extension = extension;
 		this.bytes = bytes;
 		this.lines = lines;
+		this.numFiles = numFiles;
 	}
 }

@@ -11,7 +11,6 @@ import java.util.Map;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +27,7 @@ public final class GithubRepoAnalyzerImpl implements GithubRepoAnalyzer {
 
 	private static final String PREFIX = "https://github.com";
 
-	private Map<String, FileSum> contentMap;
+	private Map<String, FileSum> contentMap;	
 	
 	public Map<String, FileSum> performAnalysis(String html) {
 		contentMap = new HashMap<>();
@@ -109,7 +108,8 @@ public final class GithubRepoAnalyzerImpl implements GithubRepoAnalyzer {
 	
 	private void performFolderAnalysis(Document doc) {
 		Elements lines = doc.select("table.files").select("tr.js-navigation-item");
-		for (Element line : lines) {
+		
+		lines.parallelStream().forEach((line) -> {
 			Elements el = line.select("svg");
 			if (el != null && !el.isEmpty()) {
 				String icon = el.get(0).attributes().get("aria-label");
@@ -120,14 +120,15 @@ public final class GithubRepoAnalyzerImpl implements GithubRepoAnalyzer {
 					performAnalysis(link, FileType.FILE);
 				}
 			}
-		}
+		});
 	}
 	
 	private synchronized void increment(String extension, Integer lines, Long bytes) {
 		FileSum content = contentMap.get(extension);
 		if (content == null) {
-			content = new FileSum(extension, 0L, 0);
+			content = new FileSum(extension, 0, 0L, 0);
 		}
+		content.setNumFiles(content.getNumFiles() + 1);
 		content.setBytes(content.getBytes() + bytes);
 		content.setLines(content.getLines() + lines);
 		contentMap.put(extension, content);
