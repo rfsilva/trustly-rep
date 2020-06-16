@@ -1,6 +1,9 @@
 package br.com.rodrigo.githubfiles.util;
 
 public final class FileUtils {
+	
+	private FileUtils() {
+	}
 
 	public static String getExtension(String name) {
 		if (name == null) {

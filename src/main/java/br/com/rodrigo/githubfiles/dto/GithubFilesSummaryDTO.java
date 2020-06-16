@@ -1,4 +1,4 @@
-package br.com.rodrigo.githubfiles.controller.dto;
+package br.com.rodrigo.githubfiles.dto;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package br.com.rodrigo.githubfiles.lab;
+package br.com.rodrigo.githubfiles.enums;
 
 public enum FileType {
 	FILE,

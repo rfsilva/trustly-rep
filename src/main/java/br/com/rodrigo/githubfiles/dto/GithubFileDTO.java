@@ -1,6 +1,4 @@
-package br.com.rodrigo.githubfiles.controller.dto;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+package br.com.rodrigo.githubfiles.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -13,10 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class GithubFileDTO {
-
-	@JsonIgnore
-	private String name;
-	
 	private String extension;
 	private Integer lines;
 	private Long bytes;

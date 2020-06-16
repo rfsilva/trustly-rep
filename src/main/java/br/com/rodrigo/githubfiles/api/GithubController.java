@@ -1,4 +1,4 @@
-package br.com.rodrigo.githubfiles.controller;
+package br.com.rodrigo.githubfiles.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.rodrigo.githubfiles.controller.dto.GithubFilesSummaryDTO;
+import br.com.rodrigo.githubfiles.dto.GithubFilesSummaryDTO;
 import br.com.rodrigo.githubfiles.service.GithubService;
 
 @RestController
@@ -23,7 +23,7 @@ public class GithubController {
 	
 	@GetMapping("/{repository}")
 	public ResponseEntity<GithubFilesSummaryDTO> getSummary(@PathVariable String repository) {
-		GithubFilesSummaryDTO result = githubService.getFilesSummary(repository);
+		GithubFilesSummaryDTO result = githubService.getGithubSummary(repository);
 		return ResponseEntity.ok(result);
 	}
 }
