@@ -21,6 +21,9 @@ public class GithubFilesSummaryDTO {
 	@ApiModelProperty(notes = "Result of analysis, grouped by file extension")
 	private List<GithubFileDTO> fileDetailsList;
 	
-	@ApiModelProperty(notes = "Result of processing: 0 - Success; 1 - Failure: bad URL/Repository")
+	@ApiModelProperty(notes = "Result of processing: 0 - Success; Other - error, see errorDescription for details")
 	private Integer errorCode;
+	
+	@ApiModelProperty(notes = "Details of error reported")
+	private String description;
 }
